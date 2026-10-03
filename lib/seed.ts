@@ -1,9 +1,13 @@
 import type { DemoState } from "@/lib/types";
 
-const now = new Date("2026-10-03T18:00:00-05:00");
-const isoDaysAgo = (days: number) => new Date(now.getTime() - days * 86_400_000).toISOString();
+const DAY_MS = 86_400_000;
 
 export function createSeedState(): DemoState {
+  // Derived from the real clock so the demo keeps its "added minutes ago" and
+  // "recent activity" framing on any day it is run.
+  const now = Date.now();
+  const isoDaysAgo = (days: number) => new Date(now - days * DAY_MS).toISOString();
+  const isoMinutesAgo = (minutes: number) => new Date(now - minutes * 60_000).toISOString();
   return {
     customer: {
       id: "maria_001",
@@ -38,7 +42,7 @@ export function createSeedState(): DemoState {
         id: "recipient_secure",
         name: "Secure Asset Services",
         relationship: "New recipient",
-        createdAt: new Date(now.getTime() - 120_000).toISOString(),
+        createdAt: isoMinutesAgo(2),
         previousTransactionCount: 0,
         trustStatus: "UNVERIFIED",
       },

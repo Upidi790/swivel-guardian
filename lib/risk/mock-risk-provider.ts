@@ -76,8 +76,25 @@ export class MockRiskProvider implements RiskProvider {
       });
     }
 
-    // Keep the signature hackathon scenario stable and judge-friendly.
-    if (transaction.recipientName.toLowerCase() === "secure asset services" && transaction.amount === 2000) score = 82;
+    // Verified trust lowers recipient-identity concern, but it is deliberately
+    // not a bypass: an amount far outside the customer's range re-applies the
+    // full score, so a trusted payee cannot be used to walk a large payment
+    // past the intervention.
+    if (recipient.trustStatus === "TRUSTED") {
+      const extremeAmount = transaction.amount > customer.p95Transfer * 3;
+      signals.push({
+        type: "TRUSTED_RECIPIENT",
+        severity: 0,
+        explanation: extremeAmount
+          ? "This recipient is verified, but the amount is far outside the customer's normal range, so trust does not reduce the score."
+          : "This recipient was previously verified by the customer and an employee.",
+        category: "NORMAL",
+      });
+      if (!extremeAmount) score -= 10;
+    }
+
+    // No per-scenario overrides: the signature $2,000 demo reaches 82/100 from
+    // these weights alone (8 base + 26 new recipient + 34 amount + 14 recency).
     score = Math.max(0, Math.min(100, score));
 
     return {

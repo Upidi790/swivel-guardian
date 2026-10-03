@@ -9,7 +9,7 @@ import type {
 } from "@/lib/guardian/contracts";
 import type { GuardianProviders } from "@/lib/guardian/providers";
 import { getRiskProvider, type RiskProvider } from "@/lib/risk";
-import type { InterventionCase, RiskAnalysis, Transaction, TransactionStatus } from "@/lib/types";
+import type { CaseStatus, InterventionCase, RiskAnalysis, Transaction, TransactionStatus } from "@/lib/types";
 
 function toStoredTransaction(intent: TransactionIntent): Transaction {
   return {
@@ -39,6 +39,50 @@ function fromSuppliedRisk(request: GuardianEvaluateRequest): RiskAnalysis | unde
     ...request.behavioralRisk,
     provider: "remote",
   };
+}
+
+/**
+ * How the agent is allowed to conclude an interview.
+ *
+ * The agent can release only the hold it created itself, or hand the case to a
+ * human. It has no entry here for cancelling a payment, denying funds, or
+ * freezing an account -- those remain human-only decisions in
+ * `applyHumanDecision`. `ASK_FOLLOW_UP` is absent on purpose: it leaves the
+ * case OPEN so the conversation continues.
+ */
+const INTERVIEW_OUTCOMES: Record<
+  "ALLOW" | "REVIEW" | "ESCALATE",
+  {
+    caseStatus: CaseStatus;
+    transactionStatus: TransactionStatus;
+    resolution?: InterventionCase["resolution"];
+    closing: string;
+  }
+> = {
+  ALLOW: {
+    caseStatus: "RESOLVED",
+    resolution: "RELEASED",
+    transactionStatus: "COMPLETED",
+    closing:
+      "Nothing you described matches the pressure, threat, or secrecy patterns we look for, so we have released this payment. Thank you for confirming.",
+  },
+  REVIEW: {
+    caseStatus: "REVIEWED",
+    resolution: "UNDER_REVIEW",
+    transactionStatus: "UNDER_REVIEW",
+    closing:
+      "Because the amount and this recipient are still unusual for your account, a member of our team will confirm the payment with you before it goes out. It is on hold, not cancelled.",
+  },
+  ESCALATE: {
+    caseStatus: "ESCALATED",
+    transactionStatus: "UNDER_REVIEW",
+    closing:
+      "Your payment will stay pending while a bank employee reviews it with you. A real bank will never ask you to keep a payment secret from your family.",
+  },
+};
+
+export function isCaseClosed(status: CaseStatus) {
+  return status !== "OPEN";
 }
 
 export class GuardianService {
@@ -125,7 +169,7 @@ export class GuardianService {
 
   async addMessage(caseId: string, content: string) {
     const caseItem = await this.requireCase(caseId);
-    if (caseItem.status === "ESCALATED" || caseItem.status === "RESOLVED") throw new Error("CASE_CLOSED");
+    if (isCaseClosed(caseItem.status)) throw new Error("CASE_CLOSED");
     const transaction = await this.providers.transactions.get(caseItem.transactionId);
     if (!transaction) throw new Error("TRANSACTION_NOT_FOUND");
     const { customer, recipient } = caseItem.contextSnapshot;
@@ -134,15 +178,25 @@ export class GuardianService {
     const context = { caseItem, transaction, customer, recipient };
     const assessment = await assessWithGemini(caseItem, context);
     caseItem.assessment = assessment;
-    if (assessment.nextAction === "ESCALATE") {
-      caseItem.status = "ESCALATED";
-      await this.providers.transactions.updateStatus(caseItem.transactionId, "UNDER_REVIEW");
-      transaction.status = "UNDER_REVIEW";
+
+    const outcome =
+      assessment.nextAction === "ASK_FOLLOW_UP" ? undefined : INTERVIEW_OUTCOMES[assessment.nextAction];
+    if (outcome) {
+      caseItem.status = outcome.caseStatus;
+      if (outcome.resolution) caseItem.resolution = outcome.resolution;
+      await this.providers.transactions.updateStatus(caseItem.transactionId, outcome.transactionStatus);
+      transaction.status = outcome.transactionStatus;
+      console.info(
+        `[Guardian] Case ${caseItem.displayId} concluded as ${assessment.nextAction}; transaction ${caseItem.transactionId} is now ${outcome.transactionStatus}.`,
+      );
     }
+
     caseItem.messages.push({
       id: crypto.randomUUID(),
       role: "agent",
-      content: [assessment.customerExplanation, assessment.nextQuestion].filter(Boolean).join(" "),
+      content: [assessment.customerExplanation, assessment.nextQuestion, outcome?.closing]
+        .filter(Boolean)
+        .join(" "),
       createdAt: new Date().toISOString(),
     });
     caseItem.updatedAt = new Date().toISOString();

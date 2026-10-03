@@ -1,3 +1,4 @@
+import patterns from "@/data/scam_patterns.json";
 import { agentAssessmentSchema } from "@/lib/agent/assessment-schema";
 import { runDeterministicAgent } from "@/lib/agent/deterministic-agent";
 import { AGENT_SYSTEM_PROMPT, buildAgentContext } from "@/lib/agent/prompt";
@@ -10,7 +11,7 @@ const responseSchema = {
   properties: {
     assessment: { type: "STRING", enum: ["LOW_CONCERN", "NEEDS_CLARIFICATION", "HIGH_CONCERN"] },
     confidence: { type: "NUMBER", minimum: 0, maximum: 1 },
-    socialEngineeringSignals: { type: "ARRAY", items: { type: "STRING" } },
+    socialEngineeringSignals: { type: "ARRAY", items: { type: "STRING", enum: patterns.map((pattern) => pattern.id) } },
     nextAction: { type: "STRING", enum: ["ASK_FOLLOW_UP", "ALLOW", "REVIEW", "ESCALATE"] },
     customerExplanation: { type: "STRING" },
     nextQuestion: { type: "STRING", nullable: true },
@@ -20,7 +21,12 @@ const responseSchema = {
 
 export async function assessWithGemini(caseItem: InterventionCase, context: AgentToolContext): Promise<AgentAssessment> {
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return runDeterministicAgent(caseItem);
+  if (!apiKey) {
+    // Announced rather than silent: the demo must never look like a live model
+    // call succeeded when no credential was configured.
+    console.warn("[SWIVEL Guardian] GEMINI_API_KEY is not set; using the deterministic agent fallback.");
+    return runDeterministicAgent(caseItem);
+  }
   try {
     const model = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
     const response = await fetch(

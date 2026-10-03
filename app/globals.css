@@ -184,6 +184,11 @@ h2 { letter-spacing: -.025em; }
 .privacy-card { background: #f5f8fc; border-color: #e2e8f1; box-shadow: none; }
 .privacy-card p { color: var(--muted); font-size: 9px; line-height: 1.5; margin: 0; }
 .escalation-banner { padding: 15px; background: #fff3e7; border: 1px solid #f3d4ac; color: #7f4612; border-radius: 11px; font-size: 11px; line-height: 1.45; margin: 0 15px 13px; }
+.escalation-banner.released { background: #eaf8f1; border-color: #a8dec6; color: #0f6347; }
+.trust-request-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line, #e6eaf0); }
+.trust-request-row:last-child { border-bottom: 0; }
+.trust-request-row .subtitle { font-size: 10px; }
+.trust-request-row button { padding: 8px 12px; }
 
 .employee-hero { background: linear-gradient(125deg,#122851,#1e4a7d); color: white; padding: 30px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 19px; overflow: hidden; position: relative; }
 .employee-hero h1 { font-size: 27px; }

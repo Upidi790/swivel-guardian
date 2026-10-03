@@ -1,4 +1,27 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { AgentAssessment, NextAction } from "@/lib/types";
+
+const nextAssessment = vi.hoisted(() => ({ current: null as AgentAssessment | null }));
+
+vi.mock("@/lib/agent/gemini", () => ({
+  assessWithGemini: vi.fn(async () => {
+    if (!nextAssessment.current) throw new Error("test did not set an assessment");
+    return nextAssessment.current;
+  }),
+}));
+
+function assessmentFor(nextAction: NextAction): AgentAssessment {
+  return {
+    assessment: nextAction === "ESCALATE" ? "HIGH_CONCERN" : nextAction === "ALLOW" ? "LOW_CONCERN" : "NEEDS_CLARIFICATION",
+    confidence: 0.9,
+    socialEngineeringSignals: nextAction === "ESCALATE" ? ["AUTHORITY_IMPERSONATION", "THREAT"] : [],
+    nextAction,
+    customerExplanation: "Explanation addressed to you, the customer.",
+    nextQuestion: nextAction === "ASK_FOLLOW_UP" ? "What is the payment for?" : null,
+    rationale: ["test"],
+    modelSource: "deterministic-fallback",
+  };
+}
 import type { GuardianEvaluateRequest } from "@/lib/guardian/contracts";
 import type { GuardianProviders } from "@/lib/guardian/providers";
 import { GuardianService } from "@/lib/guardian/service";
@@ -108,5 +131,74 @@ describe("GuardianService portability", () => {
     });
     expect(notify).toHaveBeenCalledOnce();
     expect(notify.mock.calls[0][1]).toMatchObject({ action: "KEEP_UNDER_REVIEW" });
+  });
+});
+
+describe("interview outcomes", () => {
+  beforeEach(() => {
+    nextAssessment.current = null;
+  });
+
+  async function openCase() {
+    const h = harness();
+    const response = await h.service.evaluate(request(true));
+    return { ...h, caseId: response.intervention?.caseId ?? "" };
+  }
+
+  it("ASK_FOLLOW_UP leaves the case open and the payment pending", async () => {
+    const { service, caseId, transactions } = await openCase();
+    nextAssessment.current = assessmentFor("ASK_FOLLOW_UP");
+    const caseItem = await service.addMessage(caseId, "Yes.");
+    expect(caseItem.status).toBe("OPEN");
+    expect(transactions.get("external_high")?.status).toBe("PENDING_INTERVENTION");
+    expect(caseItem.messages.at(-1)?.content).toContain("What is the payment for?");
+  });
+
+  it("ALLOW releases the hold the agent created and closes the case", async () => {
+    const { service, caseId, transactions } = await openCase();
+    nextAssessment.current = assessmentFor("ALLOW");
+    const caseItem = await service.addMessage(caseId, "It is my daughter's tuition and there is no rush.");
+    expect(caseItem.status).toBe("RESOLVED");
+    expect(caseItem.resolution).toBe("RELEASED");
+    expect(transactions.get("external_high")?.status).toBe("COMPLETED");
+    expect(caseItem.messages.at(-1)?.content).toContain("released this payment");
+  });
+
+  it("REVIEW hands the payment to a human instead of releasing it", async () => {
+    const { service, caseId, transactions } = await openCase();
+    nextAssessment.current = assessmentFor("REVIEW");
+    const caseItem = await service.addMessage(caseId, "A contractor asked for this by invoice.");
+    expect(caseItem.status).toBe("REVIEWED");
+    expect(transactions.get("external_high")?.status).toBe("UNDER_REVIEW");
+    expect(caseItem.messages.at(-1)?.content).toContain("on hold, not cancelled");
+  });
+
+  it("ESCALATE keeps the payment pending for a human decision", async () => {
+    const { service, caseId, transactions } = await openCase();
+    nextAssessment.current = assessmentFor("ESCALATE");
+    const caseItem = await service.addMessage(caseId, "They threatened arrest and said not to tell my bank.");
+    expect(caseItem.status).toBe("ESCALATED");
+    expect(caseItem.resolution).toBeUndefined();
+    expect(transactions.get("external_high")?.status).toBe("UNDER_REVIEW");
+  });
+
+  it("rejects further answers once any outcome has concluded the interview", async () => {
+    for (const action of ["ALLOW", "REVIEW", "ESCALATE"] as const) {
+      const { service, caseId } = await openCase();
+      nextAssessment.current = assessmentFor(action);
+      await service.addMessage(caseId, "first answer");
+      nextAssessment.current = assessmentFor("ASK_FOLLOW_UP");
+      await expect(service.addMessage(caseId, "second answer")).rejects.toThrow("CASE_CLOSED");
+    }
+  });
+
+  it("never lets the agent cancel a payment", async () => {
+    const { service, caseId, transactions } = await openCase();
+    nextAssessment.current = assessmentFor("ESCALATE");
+    await service.addMessage(caseId, "They threatened arrest.");
+    expect(transactions.get("external_high")?.status).not.toBe("CANCELLED");
+    // CANCELLED is reachable only through an explicit human decision.
+    await service.applyHumanDecision(caseId, { action: "CANCEL", decidedBy: "human_specialist" });
+    expect(transactions.get("external_high")?.status).toBe("CANCELLED");
   });
 });

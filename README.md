@@ -25,7 +25,9 @@ Guardian separates three things that must not be blurred together:
 - Transparent local scam-pattern knowledge layer
 - Employee case queue and evidence-rich case detail
 - Simulated employee-only release, review, and cancellation controls
-- Trusted-recipient request flow that requires verification instead of bypassing checks
+- Four explicit interview outcomes: continue asking, release, hand to a human, or escalate
+- Trusted-recipient workflow where the customer can only *request* trust and an employee plus a second factor grants it
+- Verified trust that lowers recipient-identity concern but never bypasses an extreme-amount anomaly
 - Text-only intervention conversation, so the customer experience stays focused and accessible
 - One-click demo reset
 - Runtime input/model validation, safe errors, loading states, and responsive UI
@@ -54,7 +56,19 @@ flowchart TD
     O --> P[Human final decision]
 ```
 
-The AI has no release, cancel, freeze, law-enforcement, or account-control tool. Employee routes own all simulated transaction resolutions.
+### What the agent is and is not allowed to do
+
+The agent's authority is deliberately asymmetric. It may **pause** a payment, **release the pause it created itself** when the customer's explanation contains no pressure, threat, or secrecy signals, and **recommend** a human review. It has no path to cancel a payment, deny funds, freeze an account, contact law enforcement, or label anyone a criminal. `CANCELLED` is reachable only through an explicit human decision, and a test asserts it (`lib/guardian/service.test.ts`).
+
+Concretely, `INTERVIEW_OUTCOMES` in `lib/guardian/service.ts` is the complete list of ways the agent can end an interview:
+
+| Agent `nextAction` | Case | Payment |
+|---|---|---|
+| `ASK_FOLLOW_UP` | stays `OPEN` | stays `PENDING_INTERVENTION` |
+| `ALLOW` | `RESOLVED` / `RELEASED` | `COMPLETED` |
+| `REVIEW` | `REVIEWED` | `UNDER_REVIEW` — employee confirms |
+| `ESCALATE` | `ESCALATED` | `UNDER_REVIEW` — employee decides |
+| *(no entry)* | — | `CANCELLED` is human-only |
 
 ## Headless Guardian integration
 
@@ -110,10 +124,13 @@ All credentials stay in server code. Never commit `.env.local`.
 2. On Maria's dashboard, note ordinary $50–$300 activity and the recognized customer profile.
 3. Click **Send money**. The form is preloaded with **$2,000 → Secure Asset Services**.
 4. Submit. The mock engine scores it **82/100** because the recipient is new, the amount is extreme, and the recipient was just added—even though the device and San Antonio region are normal.
-5. Answer with the quick replies: **Yes** → **They called me and said they were from the government** → **They threatened arrest and told me not to tell my bank**.
-6. Guardian recognizes authority impersonation, external instruction, threat, and secrecy, then recommends escalation. The payment remains pending.
+5. Answer with the suggested replies: **Yes.** → **"They said they're from the government, my account is part of a criminal investigation, I could be arrested today, and not to tell my bank."**
+   Each turn offers a scam answer and a benign answer, so you can demo either path. The agent concludes as soon as it has enough evidence — usually after the second answer — so the second scam reply carries the authority claim, the threat, the deadline, and the secrecy request together.
+6. Guardian recognizes authority impersonation, external instruction, threat, urgency, and secrecy, then recommends escalation. The payment remains pending.
+   To demo the legitimate path instead, send **$1,500** to any new recipient and pick the benign replies — the agent clears its own hold and the payment completes.
 7. Open the employee queue. Case #1042 visibly separates behavioral evidence from customer statements and the AI recommendation.
 8. Use a simulated employee control to make the final decision.
+9. Optional: on **Recipients**, click **Request trust** on an unverified payee, then approve it from **Trust verification requests** on the employee queue. The customer alone can never reach trusted status.
 
 ## Gemini usage
 
@@ -154,6 +171,10 @@ Vitest covers:
 - Government impersonation + arrest threat + secrecy → escalate
 - Unusual but plausible daughter tuition without coercion → review
 - Adaptive follow-up after another person's instruction is disclosed
+- Each of the four interview outcomes maps to the right case and payment state
+- A concluded interview rejects further answers (`CASE_CLOSED`)
+- The agent cannot cancel a payment; only an explicit human decision can
+- Headless portability: a partner institution's supplied risk model drives the same service
 
 ## Project map
 
@@ -164,7 +185,6 @@ data/scam_patterns.json Transparent social-engineering taxonomy
 lib/agent/              Prompt, tools, Gemini, schema, safe fallback
 lib/guardian/           Headless v1 contract, service, provider interfaces, demo adapters
 lib/risk/               Mock/remote provider interface and adapters
-lib/services/           Payment and intervention orchestration
 docs/                   Integration and security documentation
 ```
 
@@ -172,7 +192,6 @@ docs/                   Integration and security documentation
 
 - Enforce Auth0 roles and MFA in a deployed environment
 - Persist cases and append-only audit events in a real database
-- Add employee approval for recipient trust requests
 - Add integration tests against the teammate's deployed model
 - Add multilingual intervention prompts
 - Deploy only after real authentication, rate limiting, CSRF protection, audit logging, retention policy, and formal security/privacy review

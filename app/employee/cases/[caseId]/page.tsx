@@ -5,8 +5,16 @@ import { Check, TriangleAlert } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import { demoStore } from "@/lib/demo-store";
 import { formatCurrency, formatDateTime } from "@/lib/format";
+import type { NextAction } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+const RECOMMENDATION_LABELS: Record<NextAction, string> = {
+  ESCALATE: "ESCALATE FOR HUMAN VERIFICATION",
+  REVIEW: "VERIFY WITH THE CUSTOMER BEFORE RELEASE",
+  ALLOW: "NO SCAM INDICATORS FOUND",
+  ASK_FOLLOW_UP: "INTERVIEW STILL IN PROGRESS",
+};
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ caseId: string }> }) {
   const { caseId } = await params; const caseItem=demoStore.getCase(caseId); if(!caseItem) notFound();
@@ -19,7 +27,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
       <section className="card"><div className="card-header"><h2>Customer interview</h2><span className="subtitle">Customer-provided statements</span></div><div className="section-body transcript">{caseItem.messages.map(m=><div className={`transcript-item ${m.role}`} key={m.id}><strong>{m.role === "agent" ? "Guardian assistant" : customerName}</strong><p>“{m.content}”</p></div>)}</div></section>
       <section className="card"><div className="card-header"><h2>Conversation evidence</h2><span className="subtitle">Distinct from behavioral risk</span></div><div className="section-body">{caseItem.assessment.socialEngineeringSignals.length?<div className="signal-chips">{caseItem.assessment.socialEngineeringSignals.map(s=><span className="signal-chip" key={s}>⚠ {s.replaceAll("_"," ")}</span>)}</div>:<p className="subtitle">No social-engineering indicators identified yet.</p>}</div></section>
     </div><aside className="detail-stack">
-      <div className="card recommendation-card"><span className="recommendation-label">AI recommendation</span><h2>{caseItem.assessment.nextAction.replaceAll("_"," ")} FOR HUMAN VERIFICATION</h2><p>{caseItem.assessment.customerExplanation}</p><div className="confidence"><span>Confidence</span><strong>{Math.round(caseItem.assessment.confidence*100)}% · {caseItem.assessment.modelSource === "gemini" ? "Gemini" : "Demo fallback"}</strong></div></div>
+      <div className="card recommendation-card"><span className="recommendation-label">AI recommendation</span><h2>{RECOMMENDATION_LABELS[caseItem.assessment.nextAction]}</h2><p>{caseItem.assessment.customerExplanation}</p><div className="confidence"><span>Confidence</span><strong>{Math.round(caseItem.assessment.confidence*100)}% · {caseItem.assessment.modelSource === "gemini" ? "Gemini" : "Demo fallback"}</strong></div></div>
       <EmployeeActions caseItem={caseItem} />
     </aside></div>
   </div></AppShell>;
