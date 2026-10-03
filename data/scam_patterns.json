@@ -1,0 +1,68 @@
+[
+  {
+    "id": "AUTHORITY_IMPERSONATION",
+    "label": "Authority impersonation",
+    "description": "Someone claims to represent a government agency, law enforcement, a court, or another authority.",
+    "indicators": ["government", "irs", "police", "court", "social security", "federal agent", "arrest"]
+  },
+  {
+    "id": "BANK_IMPERSONATION",
+    "label": "Bank impersonation",
+    "description": "Someone claims to be a bank employee and directs the customer to transfer funds.",
+    "indicators": ["bank representative", "fraud department", "security team", "bank called"]
+  },
+  {
+    "id": "EXTERNAL_INSTRUCTION",
+    "label": "External instruction",
+    "description": "Another person told the customer where or how to send the payment.",
+    "indicators": ["told me to", "asked me to", "instructed me", "they called", "they contacted"]
+  },
+  {
+    "id": "URGENCY",
+    "label": "Urgency or time pressure",
+    "description": "The customer was told to act immediately or before a deadline.",
+    "indicators": ["immediately", "right now", "urgent", "today", "deadline", "act fast"]
+  },
+  {
+    "id": "THREAT",
+    "label": "Threat or fear",
+    "description": "The request includes a threat of arrest, loss, punishment, or harm.",
+    "indicators": ["arrest", "jail", "warrant", "lose everything", "penalty", "harm"]
+  },
+  {
+    "id": "SECRECY_REQUEST",
+    "label": "Secrecy request",
+    "description": "The customer was told not to consult the bank, family, or another trusted person.",
+    "indicators": ["don't tell", "do not tell", "keep this secret", "not tell my bank", "stay on the phone"]
+  },
+  {
+    "id": "SAFE_ACCOUNT_CLAIM",
+    "label": "Move money to keep it safe",
+    "description": "Someone claims funds must be moved to a protected or safe account.",
+    "indicators": ["safe account", "protect your money", "secure account", "move your money"]
+  },
+  {
+    "id": "REMOTE_SUPPORT",
+    "label": "Remote technical support",
+    "description": "An unsolicited support representative requests access or payment.",
+    "indicators": ["tech support", "remote access", "computer virus", "screen sharing"]
+  },
+  {
+    "id": "FAMILY_EMERGENCY",
+    "label": "Family emergency",
+    "description": "A supposed relative or intermediary claims an urgent family crisis.",
+    "indicators": ["grandchild", "hospital", "emergency", "bail", "family needs"]
+  },
+  {
+    "id": "GUARANTEED_RETURN",
+    "label": "Guaranteed investment returns",
+    "description": "An investment is described as guaranteed or risk-free with unusual returns.",
+    "indicators": ["guaranteed return", "risk free", "double your money", "crypto opportunity"]
+  },
+  {
+    "id": "UNUSUAL_PAYMENT_METHOD",
+    "label": "Unusual payment instructions",
+    "description": "The customer is directed to use an unusual recipient, account, or payment rail.",
+    "indicators": ["gift card", "bitcoin atm", "wire it", "new account", "different name"]
+  }
+]
