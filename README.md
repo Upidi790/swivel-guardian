@@ -92,7 +92,7 @@ copy .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). API keys are optional; the complete demo works without them.
+Open [Swivel Guardian](http://127.0.0.1:3000/dashboard). API keys are optional; the complete demo works without them.
 
 For production-style validation:
 
