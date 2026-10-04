@@ -18,6 +18,15 @@ export const demoStore = {
     const index = state().cases.findIndex((item) => item.id === caseItem.id);
     if (index >= 0) state().cases[index] = caseItem;
   },
+  requestSupport: (caseId: string, request: "LIVE_CHAT" | "PHONE_CALL") => {
+    const caseItem = state().cases.find((item) => item.id === caseId);
+    if (!caseItem) return undefined;
+    caseItem.supportRequest = request;
+    caseItem.supportStatus = request === "LIVE_CHAT" ? "QUEUED" : "CALL_REQUESTED";
+    caseItem.updatedAt = new Date().toISOString();
+    caseItem.employeeNotes.push(`${request === "LIVE_CHAT" ? "Live chat" : "Phone call"} requested by customer.`);
+    return structuredClone(caseItem);
+  },
   updateTransactionStatus: (id: string, status: Transaction["status"]) => {
     const transaction = state().transactions.find((item) => item.id === id);
     if (transaction) transaction.status = status;

@@ -5,9 +5,18 @@ import { AGENT_SYSTEM_PROMPT, buildAgentContext } from "@/lib/agent/prompt";
 import type { AgentToolContext } from "@/lib/agent/tools";
 import type { AgentAssessment, InterventionCase } from "@/lib/types";
 
+function fallbackEmployeeNotification(assessment: AgentAssessment, _caseItem: InterventionCase) {
+  if (assessment.employeeNotification || assessment.nextAction !== "ESCALATE") return assessment;
+  const signals = assessment.socialEngineeringSignals.slice(0, 2).map((item) => item.replaceAll("_", " ").toLowerCase()).join(" and ");
+  return {
+    ...assessment,
+    employeeNotification: `Guardian identified ${signals || "high-risk social-engineering indicators"} in the customer conversation. The payment remains held and has not been sent; please review the full case within five minutes.`,
+  };
+}
+
 const responseSchema = {
   type: "OBJECT",
-  required: ["assessment", "confidence", "socialEngineeringSignals", "nextAction", "customerExplanation", "nextQuestion", "rationale"],
+  required: ["assessment", "confidence", "socialEngineeringSignals", "nextAction", "customerExplanation", "nextQuestion", "rationale", "employeeNotification"],
   properties: {
     assessment: { type: "STRING", enum: ["LOW_CONCERN", "NEEDS_CLARIFICATION", "HIGH_CONCERN"] },
     confidence: { type: "NUMBER", minimum: 0, maximum: 1 },
@@ -16,6 +25,7 @@ const responseSchema = {
     customerExplanation: { type: "STRING" },
     nextQuestion: { type: "STRING", nullable: true },
     rationale: { type: "ARRAY", items: { type: "STRING" } },
+    employeeNotification: { type: "STRING" },
   },
 };
 
@@ -25,7 +35,7 @@ export async function assessWithGemini(caseItem: InterventionCase, context: Agen
     // Announced rather than silent: the demo must never look like a live model
     // call succeeded when no credential was configured.
     console.warn("[SWIVEL Guardian] GEMINI_API_KEY is not set; using the deterministic agent fallback.");
-    return runDeterministicAgent(caseItem);
+    return fallbackEmployeeNotification(runDeterministicAgent(caseItem), caseItem);
   }
   try {
     const model = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
@@ -52,9 +62,9 @@ export async function assessWithGemini(caseItem: InterventionCase, context: Agen
     const text = payload?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (typeof text !== "string") throw new Error("Gemini response did not contain structured text");
     const parsed = agentAssessmentSchema.parse(JSON.parse(text));
-    return { ...parsed, modelSource: "gemini" };
+    return fallbackEmployeeNotification({ ...parsed, modelSource: "gemini" }, caseItem);
   } catch (error) {
     console.warn("[SWIVEL Guardian] Gemini unavailable or malformed; using deterministic agent fallback.", error);
-    return runDeterministicAgent(caseItem);
+    return fallbackEmployeeNotification(runDeterministicAgent(caseItem), caseItem);
   }
 }

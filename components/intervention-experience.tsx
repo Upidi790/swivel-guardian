@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Check, LockKeyhole, MessageCircle, Send, ShieldEllipsis, TriangleAlert } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
+import { ProtectionSequence } from "@/components/protection-sequence";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 import type { InterventionCase, Transaction } from "@/lib/types";
 
@@ -12,7 +13,7 @@ import type { InterventionCase, Transaction } from "@/lib/types";
 // carries the full set of signals it is meant to disclose rather than relying
 // on a later message that may never be accepted.
 const quickReplyTurns = [
-  ["Yes.", "No, nobody contacted me."],
+  ["Someone asked me to send it.", "It was my own decision."],
   [
     "They said they're from the government, my account is part of a criminal investigation, I could be arrested today, and not to tell my bank.",
     "It's my daughter's tuition. I decided to pay it myself and there's no rush.",
@@ -54,13 +55,13 @@ export function InterventionExperience({ initialCase, transaction }: { initialCa
     </div>
     <div className="intervention-grid">
       <section className="card chat-card">
-        <div className="chat-header"><div className="agent-presence"><div className="agent-dot"><MessageCircle size={17} /></div><div><strong>Guardian assistant</strong><small>● Secure conversation</small></div></div></div>
+        <div className="chat-header"><div className="agent-presence"><div className="agent-dot"><MessageCircle size={17} /></div><div><strong>Guardian assistant</strong><small>● Secure conversation · you choose what to share</small></div></div></div>
         <div className="messages" ref={messagesRef} aria-live="polite">
           {caseItem.messages.map((item) => <div className={`message ${item.role}`} key={item.id}><div><div className="message-bubble">{item.content}</div><time>{formatDateTime(item.createdAt)}</time></div></div>)}
           {busy && <div className="message"><div className="message-bubble typing" role="status" aria-label="Guardian is thinking"><i /><i /><i /></div></div>}
         </div>
         {error && <div className="error-box" style={{ margin: "0 15px 10px" }}>{error}</div>}
-        {closed ? (released ? <div className="escalation-banner released"><strong>Payment released.</strong> Nothing you told us matched the scam patterns we look for, so your payment is on its way. <Link className="text-link" href="/transactions">View activity →</Link></div> : <div className="escalation-banner"><strong>Human review requested.</strong> Your payment remains pending. A bank employee—not the AI—will make the final decision. <Link className="text-link" href="/employee/cases">Open demo employee queue →</Link></div>) : <>
+        {closed ? (released ? <div className="escalation-banner released"><strong>Payment released.</strong> Nothing you shared matched the scam patterns we check for, so your payment is on its way. <Link className="text-link" href="/transactions">View activity →</Link></div> : caseItem.assessment.assessment === "HIGH_CONCERN" ? <ProtectionSequence caseItem={caseItem} /> : <div className="escalation-banner"><strong>A specialist is reviewing this with care.</strong> Your payment remains pending. A bank employee—not the AI—will make the final decision. <Link className="text-link demo-console-link" href="/employee/cases">Demo: view the SWIVEL Console handoff →</Link></div>) : <>
           <div className="quick-replies">{(quickReplyTurns[customerAnswerCount] ?? []).map((reply) => <button type="button" key={reply} onClick={() => send(reply)}>{reply}</button>)}</div>
           <form className="chat-input" onSubmit={(e) => { e.preventDefault(); send(); }}><textarea aria-label="Your answer" placeholder="Type your answer…" value={message} onChange={(e) => setMessage(e.target.value)} disabled={busy} /><button type="submit" disabled={busy || !message.trim()} aria-label="Send answer"><Send size={17} /></button></form>
         </>}

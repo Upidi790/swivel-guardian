@@ -5,6 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Send } from "@/components/icons";
 import type { Recipient } from "@/lib/types";
 
+const paymentDefaults: Record<string, { amount: string; memo: string }> = {
+  recipient_elena: { amount: "95", memo: "Dinner" },
+  recipient_college: { amount: "4800", memo: "Fall tuition" },
+  recipient_secure: { amount: "2000", memo: "Account protection" },
+  recipient_protection: { amount: "3250", memo: "Account security" },
+};
+
 export function PaymentForm({
   recipients,
   customer,
@@ -16,8 +23,8 @@ export function PaymentForm({
   const router = useRouter();
   const defaultRecipient = search.get("recipient") ?? "recipient_secure";
   const [recipientId, setRecipientId] = useState(defaultRecipient);
-  const [amount, setAmount] = useState(defaultRecipient === "recipient_secure" ? "2000" : "");
-  const [memo, setMemo] = useState(defaultRecipient === "recipient_secure" ? "Account protection" : "");
+  const [amount, setAmount] = useState(paymentDefaults[defaultRecipient]?.amount ?? "");
+  const [memo, setMemo] = useState(paymentDefaults[defaultRecipient]?.memo ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const recipient = useMemo(() => recipients.find((item) => item.id === recipientId), [recipientId, recipients]);
@@ -68,7 +75,7 @@ export function PaymentForm({
       {error && <div className="error-box" role="alert">{error}</div>}
       <div className="field">
         <label htmlFor="recipient">Recipient</label>
-        <select id="recipient" value={recipientId} onChange={(e) => { setRecipientId(e.target.value); if (e.target.value === "recipient_secure") { setAmount("2000"); setMemo("Account protection"); } }}>
+        <select id="recipient" value={recipientId} onChange={(e) => { const nextRecipient = e.target.value; const defaults = paymentDefaults[nextRecipient]; setRecipientId(nextRecipient); setAmount(defaults?.amount ?? ""); setMemo(defaults?.memo ?? ""); }}>
           {recipients.map((item) => <option value={item.id} key={item.id}>{item.name} — {item.relationship}</option>)}
         </select>
       </div>

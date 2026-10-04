@@ -48,6 +48,21 @@ describe("MockRiskProvider", () => {
     expect(result.signals).toEqual(expect.arrayContaining([expect.objectContaining({ type: "KNOWN_DEVICE" })]));
   });
 
+  it("does not interrupt a small payment even when a new payee adds risk signals", async () => {
+    const result = await new MockRiskProvider().analyzeTransaction(
+      transaction({ recipientId: "recipient_new", recipientName: "New payee", amount: 20 }),
+      {
+        ...riskContext,
+        recipient: {
+          destinationId: "recipient_new", displayName: "New payee", createdAt: new Date().toISOString(),
+          previousTransactionCount: 0, trustStatus: "UNVERIFIED",
+        },
+      },
+    );
+    expect(result.riskScore).toBeGreaterThanOrEqual(40);
+    expect(result.requiresIntervention).toBe(false);
+  });
+
   it("reproduces the signature safe-device anomaly", async () => {
     const result = await new MockRiskProvider().analyzeTransaction(
       transaction({ recipientId: "recipient_secure", recipientName: "Secure Asset Services", amount: 2_000 }),

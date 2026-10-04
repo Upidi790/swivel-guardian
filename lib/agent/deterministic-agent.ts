@@ -18,21 +18,20 @@ export function initialAssessment(riskAnalysis?: InterventionCase["riskAnalysis"
   const riskSignals = riskAnalysis?.signals.filter((signal) => signal.category === "RISK") ?? [];
   const normalSignals = riskAnalysis?.signals.filter((signal) => signal.category === "NORMAL") ?? [];
   const riskSummary = riskSignals.length
-    ? `This payment differs from the customer's normal activity: ${riskSignals
+    ? `This payment is a little different from your usual activity: ${riskSignals
         .slice(0, 2)
-        .map((signal) => signal.explanation.replace(/[.!]$/, "").toLowerCase())
-        .join("; ")}.`
-    : "This payment differs from the customer's normal activity.";
+        .map((signal) => signal.explanation.replace(/[.!]$/, "").toLowerCase())}.`
+    : "This payment is a little different from your usual activity.";
   const normalSummary = normalSignals.length
-    ? " Some identity and access indicators still look normal, so we need to understand the reason for the payment."
-    : " We need to understand the reason for the payment.";
+    ? " This is a quick safety check, not an accusation—you can share only what feels comfortable."
+    : " This is a quick safety check, and you can share only what feels comfortable.";
   return {
     assessment: "NEEDS_CLARIFICATION",
     confidence: 0.62,
     socialEngineeringSignals: [],
     nextAction: "ASK_FOLLOW_UP",
     customerExplanation: `${riskSummary}${normalSummary}`,
-    nextQuestion: "Did someone contact you and ask you to make this payment?",
+    nextQuestion: "Was this payment your idea, or did someone ask you to send it?",
     rationale: ["New recipient", "Amount far above normal", "Known device and normal region"],
     modelSource: "deterministic-fallback",
   };
@@ -66,7 +65,7 @@ export function runDeterministicAgent(caseItem: InterventionCase): AgentAssessme
       confidence: 0.68,
       socialEngineeringSignals: [],
       nextAction: "ASK_FOLLOW_UP",
-      customerExplanation: "Thanks. We still need to verify why this unusually large payment is going to a new recipient.",
+      customerExplanation: "Thanks for confirming. Because this is a new recipient and a larger-than-usual payment, one small detail will help us keep it safe.",
       nextQuestion: "What is the payment for, and how do you know the recipient?",
       rationale: ["No third-party instruction disclosed", "Behavioral anomaly still requires verification"],
       modelSource: "deterministic-fallback",
@@ -79,7 +78,7 @@ export function runDeterministicAgent(caseItem: InterventionCase): AgentAssessme
       confidence: 0.76,
       socialEngineeringSignals: signals.length ? signals : ["EXTERNAL_INSTRUCTION"],
       nextAction: "ASK_FOLLOW_UP",
-      customerExplanation: "Thank you. A request from another person can be important context for an unusual payment.",
+      customerExplanation: "Thanks for sharing that. Someone else being involved is useful context; it does not mean anything is wrong.",
       nextQuestion: "How did they contact you, and what did they say the payment was for?",
       rationale: ["Customer acknowledged contact or instruction from another person"],
       modelSource: "deterministic-fallback",
@@ -106,7 +105,7 @@ export function runDeterministicAgent(caseItem: InterventionCase): AgentAssessme
       confidence: 0.78,
       socialEngineeringSignals: signals.filter((signal) => signal !== "EXTERNAL_INSTRUCTION"),
       nextAction: "REVIEW",
-      customerExplanation: "Your explanation does not contain common pressure, threat, or secrecy indicators. Because the amount and recipient are still unusual, a brief verification is recommended.",
+      customerExplanation: "That sounds like a reasonable explanation, and you have not described pressure, threats, or secrecy. Because this is a new payment destination, a specialist will do one brief verification. Once it is confirmed, you can request trusted-recipient verification for future payments—nothing is added automatically.",
       nextQuestion: null,
       rationale: ["Plausible payment purpose", "No urgency, threat, or secrecy disclosed", "Behavioral anomaly remains"],
       modelSource: "deterministic-fallback",

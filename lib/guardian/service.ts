@@ -11,6 +11,18 @@ import type { GuardianProviders } from "@/lib/guardian/providers";
 import { getRiskProvider, type RiskProvider } from "@/lib/risk";
 import type { CaseStatus, InterventionCase, RiskAnalysis, Transaction, TransactionStatus } from "@/lib/types";
 
+const interventionFloorUsd = Number(process.env.GUARDIAN_INTERVENTION_FLOOR_USD ?? 100);
+
+function applyInterventionFloor(intent: TransactionIntent, risk: RiskAnalysis): RiskAnalysis {
+  // Convenience guardrail for this demo: a small payment must not start an
+  // intrusive safety conversation merely because a payee is new. The risk
+  // evidence remains available to the bank, but no customer hold is created.
+  if (intent.currency === "USD" && intent.amount < interventionFloorUsd && risk.requiresIntervention) {
+    return { ...risk, requiresIntervention: false };
+  }
+  return risk;
+}
+
 function toStoredTransaction(intent: TransactionIntent): Transaction {
   return {
     id: intent.transactionId,
@@ -103,9 +115,10 @@ export class GuardianService {
       request.recipientContext ??
       (await this.providers.recipientContext.getRecipientContext(intent.institutionId, intent));
     const transaction = toStoredTransaction(intent);
-    const risk =
+    const analyzedRisk =
       fromSuppliedRisk(request) ??
       (await this.riskProvider.analyzeTransaction(transaction, { customer, recipient }));
+    const risk = applyInterventionFloor(intent, analyzedRisk);
 
     if (!risk.requiresIntervention) {
       transaction.status = "COMPLETED";

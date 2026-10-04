@@ -15,6 +15,7 @@ Project goal
 What is already implemented
 - Next.js 16, React 19, TypeScript, Tailwind, Biome, Vitest.
 - Reference customer and employee demo UI at `/dashboard`, `/send`, `/intervention/[caseId]`, `/employee`, etc.
+- The demo journey is customer payment → safety check → customer conversation → SWIVEL Console employee review → `/payment-status/[caseId]` customer outcome. Keep those two product surfaces visually distinct while sharing the Guardian API.
 - A reusable headless Guardian API:
   - `POST /api/v1/transactions/evaluate`
   - `GET /api/v1/cases/:caseId`
@@ -24,14 +25,14 @@ What is already implemented
 - The contract and service live in `lib/guardian/`. The browser-agnostic integration demo is `/integration`.
 - Provider interfaces isolate customer/recipient lookup, transactions, cases, decision callbacks, and behavioral-risk ingestion.
 - Gemini is server-side only and Zod-validates structured output; a deterministic fallback works without a key.
-- The customer intervention is intentionally text-only; ElevenLabs and browser speech are not part of this build.
+- The customer intervention is intentionally text-only; no voice route or ElevenLabs integration is active.
 - Remote behavioral-risk support is adapter-ready; the mocked risk engine is the default.
+- The teammate handoff is integrated through the compatible `/analyze` transfer endpoint. Read `docs/BEHAVIORAL_ENGINE_INTEGRATION.md` before changing that adapter; do not present the separate Sparkov merchant-card endpoint as live bank-transfer evidence.
 - The app deliberately uses in-memory demo data and an explicit demo role switch. Auth0 and deployment are not live yet.
 
 Credential status
 - A Gemini key should be configured locally in `.env.local`; verify its presence only and never print its value.
 - Use `gemini-3.5-flash-lite` for new Gemini API projects; the earlier 2.5 model family may return HTTP 404 for them.
-- ElevenLabs is intentionally not configured or required.
 - After the user creates secrets locally, use `.env.local` (gitignored) with the names already listed in `.env.example`:
   GEMINI_API_KEY, GEMINI_MODEL,
   RISK_PROVIDER, RISK_ENGINE_URL, GUARDIAN_API_KEY, GUARDIAN_ALLOWED_ORIGIN,
@@ -60,7 +61,7 @@ Add only the statements that match the task you want Claude Code to do next:
 
 - "My target bank-app scenario is **[wire / ACH / card / P2P]** and the fictional institution is **[name]**. Keep the platform neutral."
 - "I have added the following local variables (do not reveal them): **[variable names only]**. Test the integration and tell me only whether it works."
-- "Keep Guardian text-only. Do not add ElevenLabs, browser speech, voice input, or any voice-related user interface."
+- "Keep the intervention text-only. Do not reintroduce a voice provider unless I explicitly request it."
 - "Implement live Auth0 now. My allowed local callback is **[URL]** and my deployed callback is **[URL]**."
 - "Prepare the DigitalOcean deployment configuration, but do not create paid resources or deploy until I explicitly approve it."
 - "My teammate's risk engine endpoint and contract are documented in **[path]**. Build an adapter with strict timeouts and a mock fallback."

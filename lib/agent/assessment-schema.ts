@@ -8,4 +8,5 @@ export const agentAssessmentSchema = z.object({
   customerExplanation: z.string().min(1).max(1_000),
   nextQuestion: z.string().max(500).nullable(),
   rationale: z.array(z.string()).max(8),
+  employeeNotification: z.string().min(1).max(320).optional(),
 });

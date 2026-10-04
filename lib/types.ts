@@ -89,6 +89,7 @@ export interface AgentAssessment {
   customerExplanation: string;
   nextQuestion: string | null;
   rationale: string[];
+  employeeNotification?: string;
   modelSource: "gemini" | "deterministic-fallback";
 }
 
@@ -105,6 +106,8 @@ export interface InterventionCase {
   messages: ChatMessage[];
   assessment: AgentAssessment;
   employeeNotes: string[];
+  supportRequest?: "LIVE_CHAT" | "PHONE_CALL";
+  supportStatus?: "UNREQUESTED" | "QUEUED" | "CALL_REQUESTED" | "ASSIGNED";
   resolution?: "RELEASED" | "UNDER_REVIEW" | "CANCELLED";
   contextSnapshot: {
     customer: import("@/lib/guardian/contracts").CustomerContext;

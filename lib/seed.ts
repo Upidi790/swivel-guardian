@@ -1,106 +1,29 @@
-import type { DemoState } from "@/lib/types";
+import type { DemoState, InterventionCase, RiskAnalysis } from "@/lib/types";
 
-const DAY_MS = 86_400_000;
+const stamp = () => new Date().toISOString();
+const makeRisk = (id: string, score: number, level: RiskAnalysis["riskLevel"], signals: RiskAnalysis["signals"]): RiskAnalysis => ({ transactionId: id, riskScore: score, riskLevel: level, requiresIntervention: true, signals, baseline: { medianTransfer: 120, p95Transfer: 430, previousRecipientTransactions: 0 }, provider: "mock" });
 
 export function createSeedState(): DemoState {
-  // Derived from the real clock so the demo keeps its "added minutes ago" and
-  // "recent activity" framing on any day it is run.
-  const now = Date.now();
-  const isoDaysAgo = (days: number) => new Date(now - days * DAY_MS).toISOString();
-  const isoMinutesAgo = (minutes: number) => new Date(now - minutes * 60_000).toISOString();
-  return {
-    customer: {
-      id: "maria_001",
-      name: "Maria Rodriguez",
-      initials: "MR",
-      location: "San Antonio, TX",
-      checkingBalance: 8432.18,
-      accountLastFour: "4821",
-      knownDeviceId: "iphone_maria",
-      knownRegion: "san_antonio",
-      medianTransfer: 120,
-      p95Transfer: 430,
-    },
-    recipients: [
-      {
-        id: "recipient_elena",
-        name: "Elena Rodriguez",
-        relationship: "Daughter",
-        createdAt: isoDaysAgo(600),
-        previousTransactionCount: 18,
-        trustStatus: "TRUSTED",
-      },
-      {
-        id: "recipient_cps",
-        name: "CPS Energy",
-        relationship: "Utility",
-        createdAt: isoDaysAgo(900),
-        previousTransactionCount: 24,
-        trustStatus: "TRUSTED",
-      },
-      {
-        id: "recipient_secure",
-        name: "Secure Asset Services",
-        relationship: "New recipient",
-        createdAt: isoMinutesAgo(2),
-        previousTransactionCount: 0,
-        trustStatus: "UNVERIFIED",
-      },
-    ],
-    transactions: [
-      {
-        id: "txn_0998",
-        userId: "maria_001",
-        recipientId: "recipient_heb",
-        recipientName: "H-E-B Grocery",
-        amount: 86.42,
-        memo: "Groceries",
-        deviceId: "iphone_maria",
-        ipRegion: "san_antonio",
-        createdAt: isoDaysAgo(1),
-        status: "COMPLETED",
-        direction: "outgoing",
-      },
-      {
-        id: "txn_0997",
-        userId: "maria_001",
-        recipientId: "recipient_elena",
-        recipientName: "Elena Rodriguez",
-        amount: 120,
-        memo: "Dinner",
-        deviceId: "iphone_maria",
-        ipRegion: "san_antonio",
-        createdAt: isoDaysAgo(3),
-        status: "COMPLETED",
-        direction: "outgoing",
-      },
-      {
-        id: "txn_0996",
-        userId: "maria_001",
-        recipientId: "employer",
-        recipientName: "Alamo Health Partners",
-        amount: 2450.31,
-        memo: "Direct deposit",
-        deviceId: "system",
-        ipRegion: "san_antonio",
-        createdAt: isoDaysAgo(5),
-        status: "COMPLETED",
-        direction: "incoming",
-      },
-      {
-        id: "txn_0995",
-        userId: "maria_001",
-        recipientId: "recipient_cps",
-        recipientName: "CPS Energy",
-        amount: 146.87,
-        memo: "Monthly utility",
-        deviceId: "iphone_maria",
-        ipRegion: "san_antonio",
-        createdAt: isoDaysAgo(8),
-        status: "COMPLETED",
-        direction: "outgoing",
-      },
-    ],
-    cases: [],
-  };
+  const createdAt = stamp();
+  const customer = { id: "maria_001", name: "Maria Rodriguez", initials: "MR", location: "San Antonio, TX", checkingBalance: 8432.18, accountLastFour: "4821", knownDeviceId: "iphone_maria", knownRegion: "san_antonio", medianTransfer: 120, p95Transfer: 430 };
+  const recipients = [
+    { id: "recipient_elena", name: "Elena Rodriguez", relationship: "Daughter", createdAt: "2023-01-05T12:00:00.000Z", previousTransactionCount: 18, trustStatus: "TRUSTED" as const },
+    { id: "recipient_college", name: "Alamo Community College", relationship: "Education provider", createdAt, previousTransactionCount: 0, trustStatus: "UNVERIFIED" as const },
+    { id: "recipient_secure", name: "Secure Asset Services", relationship: "New recipient", createdAt, previousTransactionCount: 0, trustStatus: "UNVERIFIED" as const },
+    { id: "recipient_protection", name: "Account Protection Hub", relationship: "New recipient", createdAt, previousTransactionCount: 0, trustStatus: "UNVERIFIED" as const },
+  ];
+  const transactions = [
+    { id: "txn_family", userId: customer.id, recipientId: "recipient_elena", recipientName: "Elena Rodriguez", amount: 95, memo: "Dinner", deviceId: customer.knownDeviceId, ipRegion: customer.knownRegion, createdAt, status: "COMPLETED" as const, direction: "outgoing" as const },
+    { id: "txn_tuition", userId: customer.id, recipientId: "recipient_college", recipientName: "Alamo Community College", amount: 4800, memo: "Fall tuition", deviceId: customer.knownDeviceId, ipRegion: customer.knownRegion, createdAt, status: "UNDER_REVIEW" as const, direction: "outgoing" as const },
+    { id: "txn_active_scam", userId: customer.id, recipientId: "recipient_secure", recipientName: "Secure Asset Services", amount: 2000, memo: "Account protection", deviceId: customer.knownDeviceId, ipRegion: customer.knownRegion, createdAt, status: "PENDING_INTERVENTION" as const, direction: "outgoing" as const },
+    { id: "txn_cancelled_scam", userId: customer.id, recipientId: "recipient_protection", recipientName: "Account Protection Hub", amount: 3250, memo: "Security transfer", deviceId: customer.knownDeviceId, ipRegion: customer.knownRegion, createdAt, status: "CANCELLED" as const, direction: "outgoing" as const },
+  ];
+  const context = (recipient: (typeof recipients)[number]) => ({ customer: { customerId: customer.id, displayName: customer.name, normalTransferMedian: customer.medianTransfer, p95Transfer: customer.p95Transfer, knownDeviceIds: [customer.knownDeviceId], knownRegions: [customer.knownRegion] }, recipient: { destinationId: recipient.id, displayName: recipient.name, createdAt: recipient.createdAt, previousTransactionCount: recipient.previousTransactionCount, trustStatus: recipient.trustStatus } });
+  const makeCase = (id: string, transactionId: string, displayId: string, status: InterventionCase["status"], recipient: (typeof recipients)[number], riskAnalysis: RiskAnalysis, assessment: InterventionCase["assessment"], resolution?: InterventionCase["resolution"]): InterventionCase => ({ id, displayId, customerId: customer.id, institutionId: "guardian_demo_credit_union", transactionId, status, resolution, createdAt, updatedAt: createdAt, riskAnalysis, assessment, employeeNotes: resolution ? [`Human outcome: ${resolution}.`] : [], contextSnapshot: context(recipient), messages: [{ id: `${id}-agent`, role: "agent", content: assessment.customerExplanation, createdAt }] });
+  const cases = [
+    makeCase("case_tuition", "txn_tuition", "2002", "REVIEWED", recipients[1], makeRisk("txn_tuition", 54, "MEDIUM", [{ type: "NEW_RECIPIENT", severity: .7, explanation: "First education payment.", category: "RISK" }, { type: "AMOUNT_OUTLIER", severity: .8, explanation: "Above Maria's usual transfer range.", category: "RISK" }]), { assessment: "NEEDS_CLARIFICATION", confidence: .76, socialEngineeringSignals: [], nextAction: "REVIEW", customerExplanation: "Maria confirmed this is tuition, but a specialist review is still appropriate for this unusually large new payment.", nextQuestion: null, rationale: ["Plausible reason without coercion."], modelSource: "gemini" }, "UNDER_REVIEW"),
+    makeCase("case_active_scam", "txn_active_scam", "2003", "OPEN", recipients[2], makeRisk("txn_active_scam", 82, "HIGH", [{ type: "NEW_RECIPIENT", severity: .9, explanation: "Recipient was just added.", category: "RISK" }, { type: "AMOUNT_OUTLIER", severity: .9, explanation: "Amount is far above Maria's baseline.", category: "RISK" }]), { assessment: "NEEDS_CLARIFICATION", confidence: .88, socialEngineeringSignals: [], nextAction: "ASK_FOLLOW_UP", customerExplanation: "This payment is unusual compared with Maria's account activity.", nextQuestion: "Did anyone contact you and ask you to make this payment?", rationale: ["New recipient and extreme amount."], modelSource: "gemini" }),
+    makeCase("case_confirmed_scam", "txn_cancelled_scam", "2004", "RESOLVED", recipients[3], makeRisk("txn_cancelled_scam", 91, "HIGH", [{ type: "AUTHORITY_IMPERSONATION", severity: .98, explanation: "Customer reported a fake bank security call.", category: "RISK" }, { type: "SECRECY_REQUEST", severity: .95, explanation: "Customer was instructed not to contact the bank.", category: "RISK" }]), { assessment: "HIGH_CONCERN", confidence: .98, socialEngineeringSignals: ["AUTHORITY_IMPERSONATION", "URGENCY", "SECRECY_REQUEST"], nextAction: "ESCALATE", customerExplanation: "A human specialist cancelled the payment after the customer reported coercive account-protection instructions.", nextQuestion: null, rationale: ["Confirmed social-engineering indicators."], modelSource: "gemini" }, "CANCELLED"),
+  ];
+  return { customer, recipients, transactions, cases };
 }

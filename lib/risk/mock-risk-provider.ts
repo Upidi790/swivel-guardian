@@ -101,7 +101,9 @@ export class MockRiskProvider implements RiskProvider {
       transactionId: transaction.id,
       riskScore: score,
       riskLevel: score >= 70 ? "HIGH" : score >= 40 ? "MEDIUM" : "LOW",
-      requiresIntervention: score >= 40,
+      // $100 is the customer-convenience floor. A new $20 payee should not
+      // create a frustrating intervention on its own.
+      requiresIntervention: transaction.amount >= 100 && score >= 40,
       signals,
       baseline: {
         medianTransfer: customer.normalTransferMedian,

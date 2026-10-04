@@ -4,6 +4,10 @@ Guardian is a polished hackathon prototype for a SWIVEL-enabled bank or credit u
 
 > This is a fictional RowdyHacks XII prototype. It is not an official SWIVEL product, contains no real customer data, and performs no real payments.
 
+## Demo journey
+
+The experience is intentionally chronological: customer payment → Guardian safety check → customer conversation → SWIVEL Console specialist review → customer-facing payment outcome. Customer routes and the SWIVEL Console are visually distinct surfaces backed by the same Guardian API contract. In the reference app, complete the employee decision and use **Open customer payment outcome** to finish the story at `/payment-status/[caseId]`.
+
 ## The problem
 
 Conventional fraud detection is good at asking whether somebody unauthorized took over an account. It is less effective when the real customer uses their normal device, from their normal location, but is being threatened or manipulated into sending money.
@@ -152,7 +156,7 @@ Tiger Data remains behind the teammate's service. Guardian is intentionally not 
 
 ## MLH integrations
 
-Gemini is integrated for the core adaptive assessment; Tiger Data stays behind the teammate-owned risk-engine contract. The customer experience intentionally remains text-only. Auth0, DigitalOcean, Backboard, Solana, and GoDaddy are deliberately not represented as completed integrations. See [docs/MLH_INTEGRATIONS.md](docs/MLH_INTEGRATIONS.md) for exact status, configuration, and why each decision was made.
+Gemini is integrated for the core adaptive assessment; the customer intervention is intentionally text-only; Tiger Data stays behind the teammate-owned risk-engine contract. Auth0, DigitalOcean, Backboard, Solana, and GoDaddy are deliberately not represented as completed integrations. See [docs/MLH_INTEGRATIONS.md](docs/MLH_INTEGRATIONS.md) for exact status, configuration, and why each decision was made.
 
 ## Roles and security
 

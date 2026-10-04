@@ -13,9 +13,9 @@ GEMINI_MODEL=gemini-3.5-flash-lite
 
 No key is required to run the full deterministic demo.
 
-## ElevenLabs — intentionally not used
+## Voice — intentionally deferred
 
-Guardian is text-only by product choice. Voice is not needed to demonstrate adaptive scam intervention, and omitting it keeps the customer interaction focused without requiring a separate account, promo code, or voice credential.
+The intervention is intentionally text-first. Voice is not part of the current product flow, so no ElevenLabs credential, route, or browser speech fallback is required. This keeps the customer experience quiet, accessible, and dependable for the hackathon demo.
 
 ## Tiger Data — clean teammate boundary
 

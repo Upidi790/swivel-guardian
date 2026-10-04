@@ -3,11 +3,12 @@ import { AppShell } from "@/components/app-shell";
 import { ArrowDownLeft, ArrowUpRight, ChevronRight, LockKeyhole, Plus, Send, ShieldEllipsis, WalletCards } from "@/components/icons";
 import { demoStore } from "@/lib/demo-store";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { StatusBadge } from "@/components/status-badge";
 
 export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
-  const { customer, transactions, recipients } = demoStore.getState();
+  const { customer, transactions, recipients, cases } = demoStore.getState();
   return (
     <AppShell>
       <div className="page-wrap">
@@ -40,21 +41,29 @@ export default function DashboardPage() {
           </div>
         </section>
 
+        <section className="dashboard-story-card">
+          <div><p className="eyebrow">Payment safety center</p><h2>Each payment can have a different outcome.</h2><p className="subtitle">Select a transaction below to see why it was handled normally, reviewed, paused for a calm safety check, or sent to a specialist. These are example outcomes—the live path uses account history, risk evidence, and what the customer chooses to share.</p></div>
+          <Link className="button-secondary" href="/employee/cases">Demo: open SWIVEL Console →</Link>
+        </section>
+
         <section className="dashboard-lower">
           <div className="card">
             <div className="card-header"><h2>Recent activity</h2><Link className="text-link" href="/transactions">View all <ChevronRight size={13} /></Link></div>
             <div>
-              {transactions.slice(0, 4).map((transaction) => (
-                <div className="transaction-row" key={transaction.id}>
+              {transactions.slice(0, 4).map((transaction) => {
+                const caseItem = cases.find((item) => item.transactionId === transaction.id);
+                const destination = caseItem ? (caseItem.status === "OPEN" || caseItem.status === "ESCALATED" ? `/intervention/${caseItem.id}` : `/payment-status/${caseItem.id}`) : "/transactions";
+                return <Link className="transaction-row journey-transaction" href={destination} key={transaction.id}>
                   <div className={`transaction-icon ${transaction.direction === "incoming" ? "incoming" : ""}`}>
                     {transaction.direction === "incoming" ? <ArrowDownLeft size={17} /> : <ArrowUpRight size={17} />}
                   </div>
                   <div className="transaction-main"><strong>{transaction.recipientName}</strong><small>{transaction.memo} · {formatDate(transaction.createdAt)}</small></div>
                   <div className={`transaction-amount ${transaction.direction === "incoming" ? "incoming" : ""}`}>
                     {transaction.direction === "incoming" ? "+" : "−"}{formatCurrency(transaction.amount)}
+                    <small>{caseItem ? <StatusBadge status={transaction.status} /> : "Completed"}</small>
                   </div>
-                </div>
-              ))}
+                </Link>;
+              })}
             </div>
           </div>
           <div className="card">
