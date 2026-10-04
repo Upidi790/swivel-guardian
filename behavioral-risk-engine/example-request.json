@@ -1,0 +1,14 @@
+{
+  "transaction_id": "case_050",
+  "user_id": "user_020",
+  "timestamp": "2026-10-03T18:00:00+00:00",
+  "amount": 751.06,
+  "currency": "USD",
+  "recipient_id": "new_payee_50",
+  "recipient_type": "rent",
+  "recipient_first_seen": "2026-10-03T17:58:00+00:00",
+  "device_id": "user_020_phone",
+  "ip_region": "Phoenix",
+  "transaction_type": "transfer",
+  "successful": false
+}

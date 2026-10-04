@@ -1,0 +1,168 @@
+{
+  "source": "Sparkov synthetic credit-card dataset, Kaggle kartik2112/fraud-detection",
+  "source_sha256": "4e32829b9ba5a6b17af707c513c15204011044df0e8971e431cedca3d8c0a8a1",
+  "customer_selection": "First 50 training-card identifiers sorted by salted SHA256, independent of labels.",
+  "customers": 50,
+  "rows": 92966,
+  "split": "Earliest 80% of selected official training observations for fit; remaining 20% for selection; official fraudTest.csv for test. Chronological cutoff respects ties.",
+  "covered_rows": {
+    "train": 51242,
+    "validation": 13037,
+    "test": 27727
+  },
+  "cold_start_test_rows": 0,
+  "features": [
+    "amount_percentile",
+    "amount_vs_median",
+    "amount_z_score",
+    "merchant_novelty",
+    "previous_merchant_transactions",
+    "days_since_merchant_first_observed",
+    "category_novelty",
+    "source_hour_rarity",
+    "transactions_previous_hour",
+    "transactions_previous_day",
+    "seconds_since_previous_transaction",
+    "merchant_distance_percentile",
+    "merchant_distance_vs_median",
+    "history_count"
+  ],
+  "winner": "behavioral_lightgbm",
+  "candidates": {
+    "rules": {
+      "threshold": 50.0,
+      "validation": {
+        "rows": 13037,
+        "fraud_rows": 84,
+        "precision": 0.19791666666666666,
+        "recall": 0.2261904761904762,
+        "f1": 0.2111111111111111,
+        "false_positive_rate": 0.005944568825754651,
+        "accuracy": 0.9891079236020557,
+        "true_positives": 19,
+        "false_positives": 77,
+        "false_negatives": 65,
+        "true_negatives": 12876
+      },
+      "test": {
+        "rows": 27727,
+        "fraud_rows": 93,
+        "precision": 0.07602339181286549,
+        "recall": 0.13978494623655913,
+        "f1": 0.09848484848484848,
+        "false_positive_rate": 0.00571759426793081,
+        "accuracy": 0.9914163090128756,
+        "true_positives": 13,
+        "false_positives": 158,
+        "false_negatives": 80,
+        "true_negatives": 27476
+      }
+    },
+    "isolation_forest": {
+      "threshold": 0.569569271027982,
+      "validation": {
+        "rows": 13037,
+        "fraud_rows": 84,
+        "precision": 0.13333333333333333,
+        "recall": 0.4523809523809524,
+        "f1": 0.20596205962059622,
+        "false_positive_rate": 0.019068941557940245,
+        "accuracy": 0.9775255043338191,
+        "true_positives": 38,
+        "false_positives": 247,
+        "false_negatives": 46,
+        "true_negatives": 12706
+      },
+      "test": {
+        "rows": 27727,
+        "fraud_rows": 93,
+        "precision": 0.025102159953298307,
+        "recall": 0.46236559139784944,
+        "f1": 0.047619047619047616,
+        "false_positive_rate": 0.060432800173699064,
+        "accuracy": 0.937966602950193,
+        "true_positives": 43,
+        "false_positives": 1670,
+        "false_negatives": 50,
+        "true_negatives": 25964
+      }
+    },
+    "behavioral_lightgbm": {
+      "threshold": 0.023886148409532158,
+      "validation": {
+        "rows": 13037,
+        "fraud_rows": 84,
+        "precision": 0.17586206896551723,
+        "recall": 0.6071428571428571,
+        "f1": 0.2727272727272727,
+        "false_positive_rate": 0.0184513240176021,
+        "accuracy": 0.979136304364501,
+        "true_positives": 51,
+        "false_positives": 239,
+        "false_negatives": 33,
+        "true_negatives": 12714
+      },
+      "test": {
+        "rows": 27727,
+        "fraud_rows": 93,
+        "precision": 0.08442776735459662,
+        "recall": 0.4838709677419355,
+        "f1": 0.14376996805111822,
+        "false_positive_rate": 0.01765940508069769,
+        "accuracy": 0.9806686623147113,
+        "true_positives": 45,
+        "false_positives": 488,
+        "false_negatives": 48,
+        "true_negatives": 27146
+      }
+    }
+  },
+  "unusual_legitimate_test": {
+    "rules": {
+      "rows": 960,
+      "fraud_rows": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "false_positive_rate": 0.16458333333333333,
+      "accuracy": 0.8354166666666667,
+      "true_positives": 0,
+      "false_positives": 158,
+      "false_negatives": 0,
+      "true_negatives": 802
+    },
+    "isolation_forest": {
+      "rows": 960,
+      "fraud_rows": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "false_positive_rate": 0.41770833333333335,
+      "accuracy": 0.5822916666666667,
+      "true_positives": 0,
+      "false_positives": 401,
+      "false_negatives": 0,
+      "true_negatives": 559
+    },
+    "behavioral_lightgbm": {
+      "rows": 960,
+      "fraud_rows": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "false_positive_rate": 0.2791666666666667,
+      "accuracy": 0.7208333333333333,
+      "true_positives": 0,
+      "false_positives": 268,
+      "false_negatives": 0,
+      "true_negatives": 692
+    }
+  },
+  "limits": [
+    "Synthetic data; not real APP scam detection accuracy.",
+    "50-customer reproducible subset, not full population.",
+    "Unusual-legitimate subset defined by predeclared rule score >=40; not independent human annotation.",
+    "Baseline includes prior observed source transactions regardless of fraud label; success status unavailable.",
+    "Merchant locations are not customer/device locations; timestamps use the source clock without a verified local timezone."
+  ]
+}

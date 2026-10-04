@@ -1,0 +1,12 @@
+{
+  "source_rows": 92966,
+  "users": 50,
+  "http_and_tiger_batch_parity": true,
+  "stable_retries": true,
+  "conflicting_retries_rejected": true,
+  "outcome_field_rejected": true,
+  "history_query_strictly_before_payment": true,
+  "labels_excluded_from_scoring": true,
+  "route": "/behavior/analyze",
+  "model_version": "sparkov-behavior-1-4e32829b9ba5"
+}

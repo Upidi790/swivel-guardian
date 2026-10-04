@@ -1,0 +1,10 @@
+.env
+*.env
+*credentials*
+__pycache__/
+.venv/
+ml_artifacts/*.csv.gz
+ml_artifacts/*.joblib
+ml_artifacts/benchmark/*.joblib
+ml_artifacts/benchmark/*.npy
+ml_artifacts/benchmark/*.csv.gz

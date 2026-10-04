@@ -1,0 +1,70 @@
+{
+  "transaction_id": "07c677684c65ada01aaab84bd3145807",
+  "user_id": "0432a80abe6785a0fdd5",
+  "model_version": "sparkov-behavior-1-4e32829b9ba5",
+  "source": "sparkov_synthetic",
+  "model_type": "behavioral_lightgbm",
+  "model_score": 9.066153218987114e-06,
+  "model_threshold": 0.009469473070447825,
+  "risk_score": 0.0019515241403536162,
+  "score_kind": "Percentile of model anomaly/fraud score among training observations; not a scam probability.",
+  "requires_intervention": false,
+  "decision": "NO_BEHAVIORAL_TRIGGER",
+  "risk_level": "LOW",
+  "baseline": {
+    "history_count": 562,
+    "window_days": 90,
+    "median_amount": 54.36,
+    "p95_amount": 260.0669999999998,
+    "prior_merchant_payments": 0,
+    "merchant_distance_km": 67.53922289108074,
+    "category_median_amount": 66.96,
+    "category_history_count": 15
+  },
+  "features": {
+    "amount_percentile": 0.6441281138790036,
+    "amount_vs_median": 1.466151582045622,
+    "amount_z_score": -0.09591724216746896,
+    "merchant_novelty": 1,
+    "previous_merchant_transactions": 0,
+    "days_since_merchant_first_observed": null,
+    "category_novelty": 0,
+    "source_hour_rarity": 0.9804270462633452,
+    "transactions_previous_hour": 0,
+    "transactions_previous_day": 5,
+    "seconds_since_previous_transaction": 8690.0,
+    "merchant_distance_percentile": 0.4697508896797153,
+    "merchant_distance_vs_median": 0.9667206305349598,
+    "history_count": 562,
+    "amount": 79.7,
+    "source_hour": 9,
+    "amount_vs_category_median": 1.1902628434886502,
+    "category_history_count": 15
+  },
+  "signals": [
+    {
+      "type": "UNSEEN_MERCHANT",
+      "points": 15,
+      "explanation": "No earlier observed payment to this merchant. This is not a newly registered bank payee."
+    }
+  ],
+  "rule_score": 15,
+  "explanation_kind": "Signals describe observed baseline deviations; they are not exact model attributions or proof of fraud.",
+  "unavailable_features": [
+    "device_novelty",
+    "ip_region_novelty",
+    "bank_recipient_registration_age",
+    "trusted_bank_recipients",
+    "account_opening_age",
+    "payment_success_status",
+    "victim_answers"
+  ],
+  "limitations": [
+    "Synthetic card transactions; not validated on real authorized-payment scams.",
+    "Merchant geography is not live customer location.",
+    "Source-clock hours are not verified customer-local hours.",
+    "Merchant first observation is not bank-payee registration."
+  ],
+  "agent_guidance": "Use deviations to ask contextual questions. Do not automatically hold a payment or infer safety from a low score. An insufficient-history result requires an explicit fallback.",
+  "persisted": true
+}

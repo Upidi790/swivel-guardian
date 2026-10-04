@@ -1,0 +1,12 @@
+{
+  "transaction_id": "38727838926f6a4237a6346daa7605d4",
+  "user_id": "097ef76a691e7284e842",
+  "timestamp": "2020-09-28T22:49:44",
+  "amount": 1000.49,
+  "merchant_id": "86ffd0d7c9e3c204d1b7",
+  "category": "shopping_net",
+  "home_latitude": 32.7699,
+  "home_longitude": -96.743,
+  "merchant_latitude": 32.91472,
+  "merchant_longitude": -97.668378
+}

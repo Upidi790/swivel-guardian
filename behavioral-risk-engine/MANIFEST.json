@@ -1,0 +1,351 @@
+{
+  "private_credentials_included": true,
+  "credential_location": ".env",
+  "files": [
+    {
+      "path": ".env",
+      "bytes": 1657,
+      "sha256": "1159ec2106d654aa449684287ee0be454ae1c6849efa5af171470d9b1d97ff1b"
+    },
+    {
+      "path": ".env.example",
+      "bytes": 306,
+      "sha256": "017f20c078cfdd333a786f19552b21998b77a9f06a56f7c3b007bc116c139cbe"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 182,
+      "sha256": "bce8f61063728f5ff741300020e58ea51fb492279eed5df40af8c5c4c794c2ef"
+    },
+    {
+      "path": "api.py",
+      "bytes": 4524,
+      "sha256": "e94bad9ab87e279b95444e2427202778278bfb151d9c5895eab69e15add21d64"
+    },
+    {
+      "path": "bank_scenarios.py",
+      "bytes": 2734,
+      "sha256": "1eaac8d8f1fe3de2bd79c13dbd281e01762b6ed74042da31462a842bdff3a6c6"
+    },
+    {
+      "path": "behavior_features.py",
+      "bytes": 7592,
+      "sha256": "6d12c28c45d3c59d13fd8298e667cd5d1065c1e7102d66e903116b763da265d9"
+    },
+    {
+      "path": "BENCHMARK-GUIDE.md",
+      "bytes": 5986,
+      "sha256": "fae4f5316dd83ff19e02d70d4eee55b9efd5036a69aa69efe0158bca16e14be9"
+    },
+    {
+      "path": "benchmark_models.py",
+      "bytes": 11553,
+      "sha256": "21e501c8bdefaa4201545bc2084cbdf3cc519d8cf5c9f2d75955932ac966b13c"
+    },
+    {
+      "path": "benchmark_scorer.py",
+      "bytes": 6439,
+      "sha256": "23e4b6b9d58175d6063d13088b869189353abf2f22183643d9be0c362bca1d5e"
+    },
+    {
+      "path": "build_sparkov.py",
+      "bytes": 8018,
+      "sha256": "86834f1722c1b730b6b2e3082813a6b3ef90cdf207aae3921917185647429609"
+    },
+    {
+      "path": "config.py",
+      "bytes": 1191,
+      "sha256": "428b8df2f7e3c2a252e233f09909588b3760e291ee91049bdd4e3c342c25c52e"
+    },
+    {
+      "path": "data.json",
+      "bytes": 1461700,
+      "sha256": "67a52f28e5afef2c9861751813298d37fefb786da43ab2d6d72ab11c54d69c2b"
+    },
+    {
+      "path": "demo.py",
+      "bytes": 5045,
+      "sha256": "8d7691733f711046048f9574a91de7e76fbdb98c0188230790c846c8b9a5eea2"
+    },
+    {
+      "path": "engine.py",
+      "bytes": 6623,
+      "sha256": "3d080855c831ad1a0a2dde319ba833ea40771907f15cae66e65fa033d92bb4da"
+    },
+    {
+      "path": "evaluation.json",
+      "bytes": 764,
+      "sha256": "3b6b62acac0108f42e101e62d12baef9aace81e8053162abdffb31ea561b9c80"
+    },
+    {
+      "path": "example-request.json",
+      "bytes": 390,
+      "sha256": "c34dd5345ea947f80348c9702e9f640ebe20fa0e70585b921b70394ace0053f4"
+    },
+    {
+      "path": "finalize_recall.py",
+      "bytes": 1393,
+      "sha256": "b4822e658aa686b2cf5d9b87065aed845d418ca79cd0e49b238d56774af44e01"
+    },
+    {
+      "path": "import_ml.py",
+      "bytes": 3714,
+      "sha256": "d571d08c1bd901896aa1c5a82a6ba416f282b496e2503d6afa852542162eb349"
+    },
+    {
+      "path": "improve_recall.py",
+      "bytes": 7673,
+      "sha256": "03068afe1ce18d1b40c60145583ab806c432a71d35a426feaef7b0d3c81fd564"
+    },
+    {
+      "path": "inspect-benchmark.sql",
+      "bytes": 740,
+      "sha256": "0e51a74e3774647015b184485861aaf9a68f27ebbe8f66d6feae27fffbaee32e"
+    },
+    {
+      "path": "inspect-demo.sql",
+      "bytes": 818,
+      "sha256": "f6c33bd35d5b31dd9fedc5fcdec86c6f41ee0441ba885f4fd4bd2469c9b679e7"
+    },
+    {
+      "path": "inspect-ml.sql",
+      "bytes": 1057,
+      "sha256": "b191ebff1d3f7d347ceeb229fc11d055fc60118fcdb12cbd91d3657c203ae075"
+    },
+    {
+      "path": "ML-GUIDE.md",
+      "bytes": 9120,
+      "sha256": "52c8e3e4da7682d6676a7da6da24f02d306a8b4066b841782730d1dcb74a626f"
+    },
+    {
+      "path": "ml_model.py",
+      "bytes": 6353,
+      "sha256": "285e5508d458a9e7f2767a2e898793ff4b8d53f5c690d54247bc5562eaa927a7"
+    },
+    {
+      "path": "ml_service.py",
+      "bytes": 1653,
+      "sha256": "b5fdbd444d3539265ce4cf010205a953b73fc8e2b1f2aa7a0ddc2f2549d5c6f7"
+    },
+    {
+      "path": "publish_benchmark.py",
+      "bytes": 2345,
+      "sha256": "e3f4a8f3673e4a9d2e8fa20e7f5fcae93d65b9ae5d251c112d62570e568705de"
+    },
+    {
+      "path": "publish_sparkov.py",
+      "bytes": 3785,
+      "sha256": "6d57b4ed3219446883109f85c4fe0bf05eed6592c08d3afb26b32cf5d2041591"
+    },
+    {
+      "path": "README.md",
+      "bytes": 11829,
+      "sha256": "a819898b7a2e007d92e2815530f435a67c4a8c3ef90bdf321aa8d3b2b36251bf"
+    },
+    {
+      "path": "RECALL-GUIDE.md",
+      "bytes": 4376,
+      "sha256": "cb6ef60313eecf471f5a82bc909675719b4ff2c8c88d42c8424c453a25cc9222"
+    },
+    {
+      "path": "recall_scorer.py",
+      "bytes": 961,
+      "sha256": "477ff9d11ee893d3ebf7e4602b01fcc89b346a0592a3a0878860de39df02f12e"
+    },
+    {
+      "path": "report_balance.py",
+      "bytes": 3803,
+      "sha256": "027002d64ea141a8de277efb9f8306df9fc0a3cce6055312c28846b2897b3856"
+    },
+    {
+      "path": "report_recall.py",
+      "bytes": 4129,
+      "sha256": "46cec5047df7f9a99b8ea775a1eeb78e65e0c5ce88274fb9088db883d05daac7"
+    },
+    {
+      "path": "report_sparkov.py",
+      "bytes": 5144,
+      "sha256": "316f7cee20d69fd588856c42ad7acad37ca4d9b306a0e01e5559ed924f8e49b8"
+    },
+    {
+      "path": "requirements-ml-lock.txt",
+      "bytes": 288,
+      "sha256": "0e13ac1d5385c9b488e218c58d00c615b3d6e25b73582aaad45132876c67507f"
+    },
+    {
+      "path": "requirements-ml.txt",
+      "bytes": 135,
+      "sha256": "6c4a9b15265fef44b8d8d0284ba493e499f607b60b1e0e56eb72fa840cd1e4ce"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 46,
+      "sha256": "2750bbde5e79fffec3aec8b1669a3e1bd1083dff7a7747ed0334cb8fbcf48e17"
+    },
+    {
+      "path": "schema-ml.sql",
+      "bytes": 2156,
+      "sha256": "8c57b51294763d6938d7a33a890d3e249c295e2e3283965ce40149ba3092dc19"
+    },
+    {
+      "path": "schema-sparkov.sql",
+      "bytes": 1516,
+      "sha256": "6b4a0ca6f8405610a99553051d0fda293688da72d0bac56e718748397692c27e"
+    },
+    {
+      "path": "schema.sql",
+      "bytes": 1936,
+      "sha256": "97360d9601e79e1206f4841d4ebdf662f6309fb7754ecb01bcddaa042c2a654e"
+    },
+    {
+      "path": "SPARKOV-GUIDE.md",
+      "bytes": 4966,
+      "sha256": "712995163bf16fef42184b59330b675c120b40d74c274fe426458d4bf4e1ca04"
+    },
+    {
+      "path": "sparkov_service.py",
+      "bytes": 4523,
+      "sha256": "756f123b9ea9d5946268368d2dfb5e6b0bf38d0b95a8fe8a5179af353f2200bb"
+    },
+    {
+      "path": "storage.py",
+      "bytes": 3668,
+      "sha256": "eb3e7352021ddf76ae37ec4f33b348b951633c487463f41911a6ea2147fc6b1d"
+    },
+    {
+      "path": "summarize_benchmark.py",
+      "bytes": 2520,
+      "sha256": "d0a8739d490cc91c8e35cae352629ceb5007c00a54d28149ad75da78c4f37e55"
+    },
+    {
+      "path": "TEAMMATE-HANDOFF.md",
+      "bytes": 9874,
+      "sha256": "7d199c4a70bc4d726e8eabc8c1f5a6a909a7f8523662533f33449326d64848a2"
+    },
+    {
+      "path": "temporal_features.py",
+      "bytes": 1112,
+      "sha256": "d19caf952074706010bd155217d86fe26a27ae8c33db64a25c2c9cf2c7be3be2"
+    },
+    {
+      "path": "test_balance.py",
+      "bytes": 2322,
+      "sha256": "03965274d17130a5e62ccf6cf55bd5a710b9a026148b887d0186e997f060d3a3"
+    },
+    {
+      "path": "test_behavior.py",
+      "bytes": 4007,
+      "sha256": "d3a222b77d96c1551a35b2ce67b4d3e89f7ab476d7a48ce6d050b0f87700c0a5"
+    },
+    {
+      "path": "test_benchmark.py",
+      "bytes": 4044,
+      "sha256": "9f97749d06c2cb5913505fd60f803240c82679e04e0d9073c6c21007f733b6e3"
+    },
+    {
+      "path": "test_engine.py",
+      "bytes": 3718,
+      "sha256": "e14287728234a3b33a6306752fce4e5208704852c13a1ba85de30df546ad30cb"
+    },
+    {
+      "path": "test_ml.py",
+      "bytes": 4975,
+      "sha256": "6db55cba132ae2030846bd0bcfc103f15f594d05f36b256c861968a8a753918f"
+    },
+    {
+      "path": "test_recall.py",
+      "bytes": 2674,
+      "sha256": "4af79ca41770a34cb3aa5ca6a80562afba27906433cf5a64d87b92bd8ce00119"
+    },
+    {
+      "path": "test_temporal_features.py",
+      "bytes": 1403,
+      "sha256": "ea74de2ce7d957c11f47ac08d63d2f5597948063c38eb7468566c869e220feb1"
+    },
+    {
+      "path": "train_ml.py",
+      "bytes": 7925,
+      "sha256": "a6f56743dc2c99230fb9cf63d996930cbcc5fb83bafc580e0eb04dcae225adc2"
+    },
+    {
+      "path": "verify_benchmark_api.py",
+      "bytes": 2226,
+      "sha256": "440773de64afaafa785e5127b283bae7d378e33e01cf4e4f2302e85c4869cf53"
+    },
+    {
+      "path": "verify_ml_database.py",
+      "bytes": 3253,
+      "sha256": "87db5e1a5935ed32e65bd1c08cfdc922ed50b63f3385756171c28e570fe2b0b1"
+    },
+    {
+      "path": "verify_recall_candidate.py",
+      "bytes": 3959,
+      "sha256": "17a714451f09a61743eaaac21be814f70e7850dcb58d7f542a11663c27e4797b"
+    },
+    {
+      "path": "sparkov_artifacts/evaluation.csv.gz",
+      "bytes": 2912210,
+      "sha256": "057a52fce85b91d3657f05bd7c49314f893aea0402e49046e83dd9376b1729f9"
+    },
+    {
+      "path": "sparkov_artifacts/high_score-request.json",
+      "bytes": 362,
+      "sha256": "fa97881b6000954e79819853bbbcc79fc854ac7ee91220ed2c51786ebe14ac87"
+    },
+    {
+      "path": "sparkov_artifacts/high_score-response.json",
+      "bytes": 3047,
+      "sha256": "c5241450781b108d49195af69af8a7ccaf67ee7045be1cc7e4747af864e48525"
+    },
+    {
+      "path": "sparkov_artifacts/history.joblib",
+      "bytes": 6860460,
+      "sha256": "ac649c951a591d7484a10b01d9862f88901634c1cdd26ac76f0c129f16ca57ae"
+    },
+    {
+      "path": "sparkov_artifacts/initial-report.json",
+      "bytes": 5465,
+      "sha256": "9c4a0879f528aec3ed3038a9e8f64e08c1e629e22d5d396c45884482b388081d"
+    },
+    {
+      "path": "sparkov_artifacts/integration-verification.json",
+      "bytes": 366,
+      "sha256": "728d9fb3bd7ecf0def161377697442f588d4d171c722286f841ace47bf980fd7"
+    },
+    {
+      "path": "sparkov_artifacts/low_score-request.json",
+      "bytes": 362,
+      "sha256": "42b7a5f9e9730f0586c72d831785b703a8b1a49c3157e00709cc37fd4028213a"
+    },
+    {
+      "path": "sparkov_artifacts/low_score-response.json",
+      "bytes": 2725,
+      "sha256": "bf55b4718905a0f4150ce1277f069a65d99e0ca0fb01b74f701388a35df45ea9"
+    },
+    {
+      "path": "sparkov_artifacts/model.joblib",
+      "bytes": 946754,
+      "sha256": "29a542fbf5e17133aaec396ff795a8700b0178e682e987dc639c867251326445"
+    },
+    {
+      "path": "sparkov_artifacts/report.json",
+      "bytes": 5510,
+      "sha256": "38c1eaae3eb6684f85b6c127155fa80289fca9eb9feeb49459e25b108a3dc9e2"
+    },
+    {
+      "path": "sparkov_artifacts/RESULTS.md",
+      "bytes": 4218,
+      "sha256": "b34b9a8d76ec25f4d5a9b21dc1c59bf5ea5186e862494e3fcea5e828e3cd4cb4"
+    },
+    {
+      "path": "sparkov_artifacts/selection.json",
+      "bytes": 1538,
+      "sha256": "77424991b1b8052a5283a9dd28548a6c3067ee39e4b4a4521f723e10a999e662"
+    },
+    {
+      "path": "sparkov_artifacts/simulated-bank-scenarios.json",
+      "bytes": 202988,
+      "sha256": "2ba64881e35e843bb4034a9f61423f87b2dc8a0fd337860a441335886bb8f6dd"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "transaction_id": "07c677684c65ada01aaab84bd3145807",
+  "user_id": "0432a80abe6785a0fdd5",
+  "timestamp": "2020-10-11T09:57:19",
+  "amount": 79.7,
+  "merchant_id": "7c81816757d1effa34fc",
+  "category": "gas_transport",
+  "home_latitude": 46.0062,
+  "home_longitude": -86.2555,
+  "merchant_latitude": 45.481888,
+  "merchant_longitude": -85.816102
+}

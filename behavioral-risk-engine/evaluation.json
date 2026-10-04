@@ -1,0 +1,35 @@
+{
+  "behavioral_triage": {
+    "tp": 35,
+    "fp": 0,
+    "tn": 55,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+  },
+  "scam_label_diagnostic_only": {
+    "tp": 15,
+    "fp": 20,
+    "tn": 50,
+    "fn": 5,
+    "precision": 0.42857142857142855,
+    "recall": 0.75,
+    "f1": 0.5454545454545454
+  },
+  "interventions_by_group": {
+    "normal": {
+      "count": 50,
+      "triggered": 0
+    },
+    "unusual_legitimate": {
+      "count": 20,
+      "triggered": 20
+    },
+    "scam_like": {
+      "count": 20,
+      "triggered": 15
+    }
+  },
+  "limitation": "Hand-designed synthetic holdouts demonstrate behavior, not real-world detection accuracy. No scenario labels or narratives are passed to the engine."
+}
